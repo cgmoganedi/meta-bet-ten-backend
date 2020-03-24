@@ -2,11 +2,11 @@ const mysql = require('mysql');
 
 const pool = mysql.createPool({
   connectionLimit: 10,
-  password: process.env.DB_PASSWORD,
-  user: process.env.DB_USERNAME,
-  database: process.env.DB_NAME,
-  host: process.env.DB_HOST,
-  port: process.env.PORT
+  password: 'password',
+  user: 'root',
+  database: 'expenses',
+  host: 'localhost',
+  port: 3306
 });
 
 let expensesdb = {};
@@ -33,4 +33,4 @@ expensesdb.one = (id) => {
   });
 }
 
-module.exports = expensesdb;
+module.exports = expensesdb; 
