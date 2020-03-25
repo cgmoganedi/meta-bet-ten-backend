@@ -1,17 +1,8 @@
-const mysql = require('mysql');
+const pool = require('../connect');
 
-const pool = mysql.createPool({
-  connectionLimit: 10,
-  password: 'password',
-  user: 'root',
-  database: 'expenses',
-  host: 'localhost',
-  port: 3306
-});
+let expenses = {};
 
-let expensesdb = {};
-
-expensesdb.all = (tableAlias) => {
+expenses.all = (tableAlias) => {
   switch(tableAlias){
     case 'expenseType': case 'expense-type':
       return new Promise((resolve, reject) => {
@@ -35,9 +26,9 @@ expensesdb.all = (tableAlias) => {
 
     default:return { error:'Unknown URL!' };
   }
-}
+};
 
-expensesdb.one = (tableAlias, id) => {
+expenses.one = (tableAlias, id) => {
   const ZERO = 0;
   switch(tableAlias){
     case 'expenseType': case 'expense-type':
@@ -59,12 +50,12 @@ expensesdb.one = (tableAlias, id) => {
           return resolve(result[ZERO]);
         });
       });
+
     default:return { error:'Unknown URL!' };
   }
-    
-}
+};
 
-expensesdb.create = (tableAlias, payload) => {
+expenses.create = (tableAlias, payload) => {
   const { name, comment, date, value, expense_type_id } = payload;
   switch(tableAlias){
     case 'expenseType': case 'expense-type':
@@ -86,8 +77,67 @@ expensesdb.create = (tableAlias, payload) => {
           return resolve(result);
         });
       });
+
     default:return { error:'Unknown URL endpoint!' };
   }
-}
+};
 
-module.exports = expensesdb;
+expenses.update = (tableAlias, id, payload) => {
+  const { name, comment, date, value, expense_type_id } = payload;
+  switch(tableAlias){
+    case 'expenseType': case 'expense-type':
+      return new Promise((resolve, reject) => {
+        pool.query(`UPDATE expense_type SET name = ?, comment = ?, WHERE id = ?`, [name, comment, id], (err, result) => {
+          if(err){
+            return reject(err);
+          }
+          return resolve(result);
+        });
+      });
+
+    case 'expenseEntry': case 'expense-entry':
+      return new Promise((resolve, reject) => {
+        pool.query(`UPDATE expense_entry SET expense_type_id = ?, date = ?, value = ?, comment = ? WHERE id = ?`, [expense_type_id, date, value, comment, id], (err, result) => {
+          if(err){
+            return reject(err);
+          }
+          return resolve(result);
+        });
+      });
+
+    default:return { error:'Unknown URL endpoint!' };
+  }
+};
+
+expenses.delete = (tableAlias, id) => {
+  switch(tableAlias){
+    case 'expenseType': case 'expense-type':
+      return new Promise((resolve, reject) => {
+        pool.query(`DELETE FROM expense_entry WHERE expense_type_id = ?`, [id], (err, result) => {
+          if(err){
+            return reject(err);
+          }
+          pool.query(`DELETE FROM expense_type WHERE id = ?`, [id], (err, result) => {
+            if(err){
+              return reject(err);
+            }
+            return resolve(result);
+          });
+      });
+    });
+
+    case 'expenseEntry': case 'expense-entry':
+      return new Promise((resolve, reject) => {
+        pool.query(`DELETE FROM expense_entry WHERE id = ?`, [id], (err, result) => {
+          if(err){
+            return reject(err);
+          }
+          return resolve(result);
+        });
+      });
+      
+    default:return { error:'Unknown URL endpoint!' };
+  }
+};
+
+module.exports = expenses;
