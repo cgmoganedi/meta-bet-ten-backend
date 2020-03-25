@@ -1,36 +1,56 @@
 const express = require('express');
-const db = require('./../db');
+const expenses = require('../db/expenses');
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
-
+router.get('/:tableAlias', async (req, res, next) => {
   try {
-    const result = await db.all();
+    const result = await expenses.all(req.params.tableAlias);
     res.json(result);
   } catch(e) {
     console.log(e);
     res.sendStatus(500);
   }
-
 });
 
-router.get('/:id', async (req, res, next) => {
-
+router.get('/:tableAlias/:id', async (req, res, next) => {
   try {
-    const result = await db.one(req.params.id);
+    const result = await expenses.one(req.params.tableAlias, req.params.id);
     res.json(result);
   } catch(e) {
     console.log(e);
     res.sendStatus(500);
   }
-
 });
 
-router.post('/', async (req, res, next) => {});
+router.post('/:tableAlias', async (req, res, next) => {
+  try {
+    const result = await expenses.create(req.params.tableAlias, req.body);
+    res.json(result);
+  } catch(e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
 
-router.put('/', async (req, res, next) => {});
+router.put('/:tableAlias/:id', async (req, res, next) => {
+  try {
+    const result = await expenses.update(req.params.tableAlias, req.params.id, req.body);
+    res.json(result);
+  } catch(e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
 
-router.delete('/', async (req, res, next) => {});
+router.delete('/:tableAlias/:id', async (req, res, next) => {
+  try {
+    const result = await expenses.delete(req.params.tableAlias, req.params.id);
+    res.json(result);
+  } catch(e) {
+    console.log(e);
+    res.sendStatus(500);
+  }
+});
 
 module.exports = router;
