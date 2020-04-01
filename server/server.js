@@ -1,3 +1,7 @@
+if(process.env.NODE_ENV !== 'production'){
+  require('dotenv').config({ path: `${process.env.PWD}/ .env` });
+}
+
 const express = require('express');
 const apiRouter = require('./routes');
 const bcrypt = require('bcrypt');
