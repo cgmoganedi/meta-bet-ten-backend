@@ -9,6 +9,7 @@ const passport = require('passport');
 const flash = require('express-flash');
 const session = require('express-session');
 const methodOverride = require('method-override');
+const cors = require('cors');
 
 const initializePassport = require('./passport-config');
 initializePassport(
@@ -21,7 +22,12 @@ const users = [];
 
 const app = express();
 app.set('view-engine', 'ejs');
+const corsOptions = {
+  origin: 'http://localhost:4200',
+  optionsSuccessStatus: 200 
+}
 
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(flash());
