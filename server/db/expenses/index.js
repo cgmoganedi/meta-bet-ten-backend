@@ -60,7 +60,7 @@ expenses.create = (tableAlias, payload) => {
   switch(tableAlias){
     case 'expenseType': case 'expense-type':
       return new Promise((resolve, reject) => {
-        pool.query(`INSERT INTO expense_type COLUMN(name, comment) VALUES(?, ?)`, [name, comment], (err, result) => {
+        pool.query(`INSERT INTO expense_type (name, comment) VALUES(?, ?)`, [name, comment], (err, result) => {
           if(err){
             return reject(err);
           }
