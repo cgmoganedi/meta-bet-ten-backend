@@ -33,10 +33,12 @@ const authenticateToken = (req, res, next) => {
 
 router.post('/login', async (req, res, next) => {
   try {
-    const { id, email } = await auth.login(req.body);
+    const { id, first_name, last_name } = await auth.login(req.body);
 
-    if(id && email){
-      const user = { userId: id, email }; 
+    if(id && first_name && last_name){
+      const user = {
+        userId: id, firstName: first_name, lastName: last_name 
+      }; 
       const accessToken = generateToken(user);
       return res.json({...user, accessToken});
     }
