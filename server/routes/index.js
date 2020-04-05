@@ -5,7 +5,14 @@ const router = express.Router();
 const auth = require('./../db/auth');
 const expenses = require('../db/expenses');
 
+const tokenLifespan = '1m';
+
 //---------------------------------------------------------------------------------------------------------
+//JWT helpers
+
+const generateToken = (user) => {
+  return jwt.sign(user, process.env.API_ACCESS_TOKEN_KEY, { expiresIn: tokenLifespan });
+}
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['Authorization'];
@@ -19,10 +26,6 @@ const authenticateToken = (req, res, next) => {
     req.user = user;
     next();
   });
-}
-
-const generateToken = (user) => {
-  return jwt.sign(user, process.env.API_ACCESS_TOKEN_KEY, { expiresIn: '1m' });
 }
 
 //---------------------------------------------------------------------------------------------------------

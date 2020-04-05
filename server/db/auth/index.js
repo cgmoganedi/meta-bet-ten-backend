@@ -12,7 +12,6 @@ authdb.login = (payload) => {
         return reject(err);
       }
       const user = result[0];
-
       if (!bcrypt.compareSync(password, user.password)){
         return resolve(401);
       }
