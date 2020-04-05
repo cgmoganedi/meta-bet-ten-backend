@@ -5,7 +5,7 @@ const router = express.Router();
 const auth = require('./../db/auth');
 const expenses = require('../db/expenses');
 
-const tokenLifespan = '1m';
+const tokenLifespan = '10m';
 
 //---------------------------------------------------------------------------------------------------------
 //JWT helpers
