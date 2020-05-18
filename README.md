@@ -1,2 +1,2 @@
-# expense-manager-be
+# meta-bet-ten-backend
 
